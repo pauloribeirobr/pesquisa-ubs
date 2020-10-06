@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import dev.informacoesUbs.model.Ubs;
@@ -69,6 +71,18 @@ public class ListaUbsService {
 		listaUbs.sort( (Ubs ubs1, Ubs ubs2)->Double.compare(ubs1.getDistancia(),ubs2.getDistancia()) );
 		
 		return listaUbs;
+	}
+
+	/**
+	 * Converte uma Lista Ubs para uma Página Ubs
+	 * @param listaUbs
+	 * @return
+	 */
+	public Page<Ubs> converteListParaPage(List<Ubs> listaUbs) {
+		
+		Page<Ubs> listaUbsPagina = new PageImpl<>(listaUbs);
+
+		return listaUbsPagina;
 	}
 
 }
