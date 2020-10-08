@@ -13,6 +13,10 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
+import dev.informacoesubs.dto.ListaUbsDto;
+import dev.informacoesubs.dto.UbsDto;
+import dev.informacoesubs.dto.UbsGeocodeDto;
+import dev.informacoesubs.dto.UbsScores;
 import dev.informacoesubs.model.Ubs;
 import dev.informacoesubs.model.UbsBase;
 import dev.informacoesubs.repository.UbsBaseRepository;
@@ -28,6 +32,10 @@ public class ListaUbsService {
     
     Logger logger = LoggerFactory.getLogger(ListaUbsService.class);
 	
+    /**
+     * Importa o arquivo CSV e cria um Banco de Dados em memória
+     * @return
+     */
 	public List<UbsBase> importarCsv() {
 		
 		BufferedReader bufferedReader;
@@ -49,6 +57,15 @@ public class ListaUbsService {
 			logger.error("Erro ao tentar importar a linha " + contador + " do CSV no Banco de Dados. Erro:" + e.getMessage());
 		} 
 		logger.info("Finalização importação do CSV: " + PLANILHA_UBS );
+		return ubsBaseRepository.findAll();
+	}
+	
+	/**
+	 * Lista todas as UBSs importadas pelo CSV
+	 * @return
+	 */
+	public List<UbsBase> listaUBSs() {
+		
 		return ubsBaseRepository.findAll();
 	}
 
@@ -96,6 +113,58 @@ public class ListaUbsService {
 		}
 
 		return listaUbsPaginada;
+	}
+	
+	public ListaUbsDto listaUBSsProximas(Double latitude, Double longitude, Integer pagina, Integer qtdePorPagina) {
+		
+		ListaUbsDto listaUbsDto = new ListaUbsDto();
+		List<UbsDto> relacaoUbs = new ArrayList<UbsDto>();
+		UbsDto ubsDto;
+		UbsGeocodeDto ubsGeoCodeDto;
+		UbsScores ubsScores;
+		
+		logger.info("Lista todas as UBSs");
+		List<UbsBase> listaUbsBase = listaUBSs();
+		
+		logger.info("Calculando a distância entre as UBSs e as coordenadas informadas");
+		List<Ubs> listaUbs = calculaDistancia(listaUbsBase, latitude, longitude);
+		
+		logger.info("Filtrando pela página " + pagina + ", com " + qtdePorPagina + " máxina de registros por página");
+		List<Ubs> listaUbsPaginada = retornaListaUbsPaginada(listaUbs, pagina, qtdePorPagina);
+		
+		logger.info("Iniciando a formatação da resposta");
+				
+		
+		listaUbsDto.setCurrentPage(pagina);
+		listaUbsDto.setPerPage(qtdePorPagina);
+		listaUbsDto.setTotalEntries(listaUbs.size());
+		
+		for(Ubs ubs : listaUbsPaginada ) {
+			
+			ubsDto = new UbsDto();
+			ubsDto.setId(1);
+			ubsDto.setName(ubs.getNome());
+			ubsDto.setAddress(ubs.getEndereco());
+			ubsDto.setCity(ubs.getCidade());
+			ubsDto.setPhone(ubs.getTelefone());
+			
+			ubsGeoCodeDto = new UbsGeocodeDto();
+			ubsGeoCodeDto.setLatitude(ubs.getLatitude());
+			ubsGeoCodeDto.setLongitude(ubs.getLongitude());
+			ubsDto.setGeocode(ubsGeoCodeDto);
+			
+			ubsScores = new UbsScores();
+			ubsScores.setAdaptationForSeniors(ubs.getSituacaoAdaptacoes());
+			ubsScores.setMedicalEquipment(ubs.getSituacaoEquipamentos());
+			ubsScores.setMedicine(ubs.getSituacaoMedicamento());
+			ubsScores.setSize(ubs.getSituacaoEstrutura());
+			ubsDto.setScores(ubsScores);
+			
+			relacaoUbs.add(ubsDto);
+		}
+		
+		listaUbsDto.setEntries(relacaoUbs);
+		return listaUbsDto;
 	}
 
 }
