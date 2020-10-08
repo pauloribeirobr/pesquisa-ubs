@@ -1,4 +1,4 @@
-package dev.informacoesUbs;
+package dev.informacoesubs;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

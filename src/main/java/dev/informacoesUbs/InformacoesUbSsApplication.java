@@ -1,4 +1,4 @@
-package dev.informacoesUbs;
+package dev.informacoesubs;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
-import dev.informacoesUbs.service.ListaUbsService;
+import dev.informacoesubs.service.ListaUbsService;
 
 @SpringBootApplication
 public class InformacoesUbSsApplication {

@@ -1,7 +1,6 @@
-package dev.informacoesUbs.model;
+package dev.informacoesubs.model;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 @ToString

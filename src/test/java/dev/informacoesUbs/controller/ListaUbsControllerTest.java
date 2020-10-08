@@ -1,4 +1,4 @@
-package dev.informacoesUbs.controller;
+package dev.informacoesubs.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -11,13 +11,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import dev.informacoesUbs.repository.UbsBaseRepository;
-import dev.informacoesUbs.service.ListaUbsService;
+import dev.informacoesubs.repository.UbsBaseRepository;
+import dev.informacoesubs.service.ListaUbsService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ListaUbsControllerTest {
+class ListaUbsControllerTest {
 
 	@Autowired
     MockMvc mockMvc;

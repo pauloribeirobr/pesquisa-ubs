@@ -1,12 +1,14 @@
-package dev.informacoesUbs.service;
+package dev.informacoesubs.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CalculoDistanciaTest {
+import dev.informacoesubs.service.CalculoDistancia;
+
+class CalculoDistanciaTest {
 
 	@Test
-	public void deveCalcularDistancia() {
+	void deveCalcularDistancia() {
 		
 		double distancia = CalculoDistancia.distanciaEmKm(36.12, -86.67, 33.94, -118.40);
 		

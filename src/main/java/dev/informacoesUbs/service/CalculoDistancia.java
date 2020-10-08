@@ -1,4 +1,4 @@
-package dev.informacoesUbs.service;
+package dev.informacoesubs.service;
 
 import org.springframework.stereotype.Service;
 

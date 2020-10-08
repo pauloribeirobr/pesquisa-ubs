@@ -1,21 +1,21 @@
-package dev.informacoesUbs.service;
+package dev.informacoesubs.service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
-import dev.informacoesUbs.model.Ubs;
-import dev.informacoesUbs.model.UbsBase;
-import dev.informacoesUbs.repository.UbsBaseRepository;
+import dev.informacoesubs.model.Ubs;
+import dev.informacoesubs.model.UbsBase;
+import dev.informacoesubs.repository.UbsBaseRepository;
 
 @Service
 public class ListaUbsService {
@@ -74,15 +74,28 @@ public class ListaUbsService {
 	}
 
 	/**
-	 * Converte uma Lista Ubs para uma Página Ubs
+	 * Retorna uma Lista de UBSs filtrada por página página
+	 * 
 	 * @param listaUbs
+	 * @param pagina
+	 * @param qtdePorPagina
 	 * @return
 	 */
-	public Page<Ubs> converteListParaPage(List<Ubs> listaUbs) {
+	public List<Ubs> retornaListaUbsPaginada(List<Ubs> listaUbs, Integer pagina, Integer qtdePorPagina) {
 		
-		Page<Ubs> listaUbsPagina = new PageImpl<>(listaUbs);
+		pagina = pagina == null ? 1 : pagina;
+		qtdePorPagina = qtdePorPagina == null ? 10 : qtdePorPagina;
+		List<Ubs> listaUbsPaginada = new ArrayList<>();
+		
+		PagedListHolder<Ubs> page = new PagedListHolder<>(listaUbs);
+		page.setPageSize(qtdePorPagina); 
+		page.setPage(pagina);
 
-		return listaUbsPagina;
+		if(page.getPageCount() >= pagina) {
+			listaUbsPaginada = page.getPageList();
+		}
+
+		return listaUbsPaginada;
 	}
 
 }

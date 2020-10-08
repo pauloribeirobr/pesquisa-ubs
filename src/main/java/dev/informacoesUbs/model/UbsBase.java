@@ -1,4 +1,4 @@
-package dev.informacoesUbs.model;
+package dev.informacoesubs.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
