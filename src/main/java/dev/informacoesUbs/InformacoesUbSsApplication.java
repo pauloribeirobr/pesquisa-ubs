@@ -7,8 +7,10 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
 import dev.informacoesubs.service.ListaUbsService;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@EnableSwagger2
 public class InformacoesUbSsApplication {
 
 	@Autowired

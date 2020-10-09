@@ -6,12 +6,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dev.informacoesubs.dto.ListaUbsDto;
 import dev.informacoesubs.service.ListaUbsService;
+import io.swagger.annotations.Api;
 
+@Api
 @Controller
+@RequestMapping("/api/v1")
 public class ListaUbsController {
 
 	@Autowired
@@ -27,6 +31,7 @@ public class ListaUbsController {
 	@GetMapping(value="/find_ubs", produces=MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ListaUbsDto> findUbs(@RequestParam String query, @RequestParam(name="page", required=false) Integer page, @RequestParam(name="per_page", required=false) Integer perPage) {
 		
+		//Define valor padrão
 		Integer pageFinal = StringUtils.isEmpty(page) ? 1 : page;
 		Integer perPageFinal = StringUtils.isEmpty(perPage) ? 10 : perPage;
 		
