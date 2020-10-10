@@ -11,4 +11,8 @@ public class MainController {
 		return "index";
 	}
 	
+	@GetMapping("/pesquisa-ubs")
+	public String pesquisaUbs() {
+		return "pesquisa_ubs";
+	}
 }

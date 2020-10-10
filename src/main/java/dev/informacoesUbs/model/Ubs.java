@@ -9,10 +9,11 @@ public class Ubs {
 	public Ubs() {
 	}
 	
-	public Ubs(double latitude, double longitude, String codigoMunicipio, String codigoCnes, String nome,
+	public Ubs(Integer id, double latitude, double longitude, String codigoMunicipio, String codigoCnes, String nome,
 			String endereco, String bairro, String cidade, String telefone, String situacaoEstrutura,
 			String situacaoAdaptacoes, String situacaoEquipamentos, String situacaoMedicamento, double distancia) {
 		super();
+		this.id = id;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.codigoMunicipio = codigoMunicipio;
@@ -29,6 +30,8 @@ public class Ubs {
 		this.distancia = distancia;
 	}
 	
+	@Getter
+	private Integer id;
 	@Getter
 	private double latitude;
 	@Getter

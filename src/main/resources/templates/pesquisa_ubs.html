@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+	crossorigin="anonymous">
+
+<title>Pesquisa Por UBS</title>
+</head>
+<body>
+<style type="text/css">
+#map {
+  height: 100%;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#my-input-searchbox {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  font-size: 15px;
+  border-radius: 3px;
+  border: 0;
+  margin-top: 10px;
+  width: 270px;
+  height: 40px;
+  text-overflow: ellipsis;
+  padding: 0 1em;
+}
+</style>
+
+	<input id="my-input-searchbox" type="text" placeholder="Autocomplete Widget">
+	<div id="map"></div>
+		<script>
+
+		function myMap() {
+			let markers = [];
+			var latitude = -23.6621079;
+			var longitude = -46.5262079;
+			var latlon=new google.maps.LatLng(latitude, longitude)
+			var mapProp = {
+				center : new google.maps.LatLng(latitude, longitude),
+				zoom : 13,
+			};
+			if(map) {
+				map.clearOverlays();				
+			}
+
+			var map = new google.maps.Map(document.getElementById("map"), mapProp);
+			
+			 // Create the search box and link it to the UI element.
+			  var input = document.getElementById('my-input-searchbox');
+			  var autocomplete = new google.maps.places.Autocomplete(input);
+			  map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+			  var marker = new google.maps.Marker({
+			    map: map
+			  });
+			   markers.push(marker);
+			  // Bias the SearchBox results towards current map's viewport.
+			  autocomplete.bindTo('bounds', map);
+			  // Set the data fields to return when the user selects a place.
+			  autocomplete.setFields(
+			    ['address_components', 'geometry', 'name']);
+			// Listen for the event fired when the user selects a prediction and retrieve
+			  // more details for that place.
+			  autocomplete.addListener('place_changed', function() {
+			    var place = autocomplete.getPlace();
+			    if (!place.geometry) {
+			      console.log("Returned place contains no geometry");
+			      return;
+			    }
+			    var bounds = new google.maps.LatLngBounds();
+				var marker = new google.maps.Marker({
+					    map: map
+				});
+				
+				//Apaga todos os marcadores anteriores
+				for (let i = 0; i < markers.length; i++) {
+				   markers[i].setMap(null);
+				}
+			    marker.setPosition(place.geometry.location);
+			    markers.push(marker);
+			    
+			    console.log(place.geometry.location.lat());
+			    latitude = place.geometry.location.lat();
+			    console.log(place.geometry.location.lng());
+			    longitude = place.geometry.location.lng();
+			    
+			    
+			    /* Aqui vamos refazer o Request*/
+			    			var request = new XMLHttpRequest();
+			request.open('GET', "https://" + window.location.hostname + "/api/v1/find_ubs?query=" + latitude + "," + longitude + "&page=1&per_page=10", true);
+
+			request.onload = function() {
+			  if (request.status >= 200 && request.status < 400) {
+			    var data = JSON.parse(request.responseText);
+			    var ubs = data.entries;
+			    ubs.forEach(function(data_ubs, index) {
+			    	
+			        var latLng = new google.maps.LatLng(data_ubs.geocode.latitude, data_ubs.geocode.longitude); 
+
+			        var marker = new google.maps.Marker({
+			           position: latLng,
+			           map: map,
+			           title: data_ubs.name
+			        });
+				    markers.push(marker);
+			        
+			        var infowindow = new google.maps.InfoWindow({
+			           content: "<div class=infowindow><h4>" + data_ubs.name +"</h4><p>" + data_ubs.address + "</p><p>Telefone: " + data_ubs.phone + "</p><p>" + data_ubs.city + "</p></div>"
+			        });
+			        google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker,map));
+			        marker.setMap(map);
+			        
+			      });
+			  } else {
+			    console.log("Erro ao tentar acessar a API")
+
+			  }
+			}
+			
+			request.send();
+			    
+			    
+
+			    if (place.geometry.viewport) {
+			      // Only geocodes have viewport.
+			      bounds.union(place.geometry.viewport);
+			    } else {
+			      bounds.extend(place.geometry.location);
+			    }
+			    map.fitBounds(bounds);
+			  });
+			
+
+			//var marker=new google.maps.Marker({position:latlon,map:map,title:"Você está aqui"});
+
+		}
+		
+		function infoCallback(infowindow, marker,map) {
+			   return function() { infowindow.open(map, marker); };
+		}
+
+	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8KcS2T9fdlkUwaLYPgzy2NAatCfTrfJM&callback=myMap&libraries=places"></script>
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+		integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+		integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+		crossorigin="anonymous"></script>
+</body>
+</html>

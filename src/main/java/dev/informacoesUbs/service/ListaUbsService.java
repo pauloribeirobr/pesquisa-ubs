@@ -82,7 +82,7 @@ public class ListaUbsService {
 	public List<Ubs> calculaDistancia(List<UbsBase> listaUbsBase, double latitude, double longitude) {
 		
 		//Converte uma lista em outra + efetua cálculo de distância
-		List<Ubs> listaUbs = listaUbsBase.stream().map(ubsBase -> new Ubs(ubsBase.getLatitude(), ubsBase.getLongitude(), ubsBase.getCodigoMunicipio(), ubsBase.getCodigoCnes(), ubsBase.getNome(), ubsBase.getEndereco(), ubsBase.getBairro(), ubsBase.getCidade(), ubsBase.getTelefone(), ubsBase.getSituacaoEstrutura(), ubsBase.getSituacaoAdaptacoes(), ubsBase.getSituacaoEquipamentos(), ubsBase.getSituacaoMedicamento(), CalculoDistancia.distanciaEmKm(latitude, longitude, ubsBase.getLatitude(), ubsBase.getLongitude()))).collect(Collectors.toList());
+		List<Ubs> listaUbs = listaUbsBase.stream().map(ubsBase -> new Ubs(ubsBase.getId(), ubsBase.getLatitude(), ubsBase.getLongitude(), ubsBase.getCodigoMunicipio(), ubsBase.getCodigoCnes(), ubsBase.getNome(), ubsBase.getEndereco(), ubsBase.getBairro(), ubsBase.getCidade(), ubsBase.getTelefone(), ubsBase.getSituacaoEstrutura(), ubsBase.getSituacaoAdaptacoes(), ubsBase.getSituacaoEquipamentos(), ubsBase.getSituacaoMedicamento(), CalculoDistancia.distanciaEmKm(latitude, longitude, ubsBase.getLatitude(), ubsBase.getLongitude()))).collect(Collectors.toList());
 		
 		//Ordena por distância
 		listaUbs.sort( (Ubs ubs1, Ubs ubs2)->Double.compare(ubs1.getDistancia(),ubs2.getDistancia()) );
@@ -142,7 +142,7 @@ public class ListaUbsService {
 		for(Ubs ubs : listaUbsPaginada ) {
 			
 			ubsDto = new UbsDto();
-			ubsDto.setId(1);
+			ubsDto.setId(ubs.getId());
 			ubsDto.setName(ubs.getNome());
 			ubsDto.setAddress(ubs.getEndereco());
 			ubsDto.setCity(ubs.getCidade());
