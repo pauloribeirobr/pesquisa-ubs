@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import dev.informacoesubs.model.Ubs;
 import dev.informacoesubs.model.UbsBase;
 import dev.informacoesubs.repository.UbsBaseRepository;
+import dev.informacoesubs.service.ListaUbsService;
 
 @SpringBootTest(classes = { ListaUbsService.class })
 public class ListaUbsServiceTest {
